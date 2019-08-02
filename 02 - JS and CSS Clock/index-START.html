@@ -54,20 +54,71 @@
       width: 100%;
       height: 100%;
       transform: translateY(-3px); /* account for the height of the clock hands */
+      transform: rotate(90deg);
     }
 
     .hand {
       width: 50%;
-      height: 6px;
-      background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%;
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+    }
+
+    .hour-hand {
+      background: black;
+      height: 6px;
+      width: 35%;
+      margin-left: 15%;
+    }
+
+    .min-hand {
+      background: blue;
+      height: 4px;
+      width: 40%;
+      margin-left: 10%;
+    }
+
+    .second-hand {
+      background: red;
+      height: 2px;
     }
 
   </style>
 
   <script>
+  const secondHand = document.querySelector(".second-hand");
+  const minHand = document.querySelector(".min-hand");
+  const hourHand = document.querySelector(".hour-hand");
+  const allHands = document.querySelectorAll(".hand")
 
+  function setDate() {
+    const now = new Date();
+
+    const seconds = now.getSeconds();
+    const secondsDegrees = ((seconds / 60) * 360);
+    // secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+    secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+
+    const mins = now.getMinutes();
+    const minsDegrees = ((mins / 60) * 360);
+    minHand.style.transform = `rotate(${minsDegrees}deg)`;
+
+    const hours = now.getHours();
+    const hoursDegrees = (((hours / 12) * 360) + ((mins / 60 / 12) * 360));
+    hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+
+    if(secondsDegrees === 0) {
+      allHands.forEach(hand => hand.style.transition = "none")
+    } else {
+      // resets the inline style by removing it so the element can revert back to the stylesheet.
+      allHands.forEach(hand => hand.style.transition = "")
+    }
+
+  }
+
+  setInterval(setDate, 1000);
 
   </script>
 </body>
