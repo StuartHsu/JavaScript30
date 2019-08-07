@@ -7,6 +7,68 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+const canvas = document.querySelector("#draw");
+const ctx = canvas.getContext("2d"); // 建立渲染環境
+canvas.width = window.innerWidth; // 設定環境寬度為瀏覽器 innerWidth
+canvas.height = window.innerHeight; // 設定環境高度為瀏覽器 innerHeight
+ctx.strokeStyle = "#BADA55"; //線條顏色
+ctx.lineJoin = "round"; // 兩線條連接處的樣式
+ctx.lineCap = "round"; // 線條尾端樣式
+ctx.lineWidth = 10; // 線條寬度
+// ctx.globalCompositeOperation = "multiply";
+
+let isDrawing = false; // 判斷是否畫圖，
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true; // 讓線變到最粗後再逐步變回來而設置的參數
+
+function draw(e) {
+  // stop the function running when they are not mouse down
+  // false -> return 不觸發 function
+  if (!isDrawing) return;
+  // 設置線條顏色用 hsl 方式，並隨著 hue 值改變
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  // 路徑繪製時，須先呼叫 beginPath() 產生路徑
+  ctx.beginPath();
+  // 接著路徑指針移到起始位置
+  ctx.moveTo(lastX, lastY);
+  // 將目前滑鼠位置與起始位置連接起來
+  ctx.lineTo(e.offsetX, e.offsetY)
+  // 把線條繪製出來
+  ctx.stroke();
+  // update lastX & lastY
+  // 將最後滑鼠停止的位置放入 X, Y 以作為下一次的起始位置
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+  hue++;
+  if (hue >= 360) {
+    hue = 0;
+  }
+  if (ctx.lineWidth >= 25 || ctx.lineWidth <=1 ) {
+    direction = !direction;
+  }
+  if (direction) {
+    ctx.lineWidth++;
+  } else {
+    ctx.lineWidth--;
+  }
+}
+
+
+// 滑鼠按鍵按下將 isDrawing flag 打開！
+canvas.addEventListener("mousedown", (e) => {
+  isDrawing = true;
+  // 當使用者點下滑鼠，在移動之前，先更新初始位置 (若沒這步，會因為一開始宣告變數位置為 0 而使線條永遠都從左上開始)
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+// 滑鼠只要一移動就觸發 function draw
+canvas.addEventListener("mousemove", draw);
+// 滑鼠按鍵放開後停止
+canvas.addEventListener("mouseup", () => isDrawing = false);
+// 滑鼠游標移出渲染環境則停止
+canvas.addEventListener("mouseout", () => isDrawing = false);
+
 </script>
 
 <style>
