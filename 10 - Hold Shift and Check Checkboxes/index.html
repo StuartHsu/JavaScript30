@@ -96,6 +96,37 @@
   </div>
 
 <script>
+const checkboxes = document.querySelectorAll('.inbox input[type="checkbox"]');
+let lastChecked;
+
+function handleCheck(e) {
+  // check if they had shift key down
+  // AND check that they are checking it 要確認起使勾選與最後勾選之間有無“已勾選”的項目
+  let inBetween = false;
+  if (e.shiftKey && this.checked) {
+    // go ahead and do what we please
+    // loop over every single checkbox
+    checkboxes.forEach(checkbox => {
+      console.log(checkbox);
+      console.log("before: " + inBetween);
+      // 將當下點選的 與 前一次點選的項目標記關閉
+      if (checkbox === this || checkbox === lastChecked) {
+        inBetween = !inBetween;
+        console.log("Starting to check them inbetween!");
+        console.log("after: " + inBetween);
+      }
+      // 將勾選範圍內的項目都打勾
+      if (inBetween) {
+        checkbox.checked = true;
+      }
+    });
+
+  }
+  // 當點下第一個 checkbox 時，將此項作為 lastChecked
+  lastChecked = this;
+}
+
+checkboxes.forEach(checkbox => checkbox.addEventListener("click", handleCheck));
 </script>
 </body>
 </html>
