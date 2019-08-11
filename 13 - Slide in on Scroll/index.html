@@ -58,6 +58,38 @@
       };
     }
 
+    const sliderImages = document.querySelectorAll(".slide-in");
+
+    function checkSlide(e) {
+      // console.count(e);
+      // 看捲動位置
+      // console.log(window.scrollY);
+      sliderImages.forEach(sliderImage => {
+        // window.scrollY 是捲動到哪(畫面上方座標) 再加上 window.innerHeight 畫面高度，就會是畫面最底下的座標，再減掉 sliderImage.height / 2 則是圖片顯示 1/2 時的定位點
+        // half way through the image 取得圖片顯示1/2高度時的地位點
+        const sliderInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
+        // console.log(sliderInAt);
+        // sliderImage.offsetTop 代表圖片頂部到頁面(內)頂部的距離
+        // bottom of the image 取得圖片底部定位點
+        const imageBottom = sliderImage.offsetTop + sliderImage.height;
+        // 判斷圖片是否過半
+        const isHalfShown = sliderInAt > sliderImage.offsetTop;
+        // 判斷畫面視窗底部是否已經捲動超過圖片底部
+        const inNotScrolledPast = window.scrollY < imageBottom;
+
+        if (isHalfShown && inNotScrolledPast) {
+          sliderImage.classList.add("active");
+        } else {
+          sliderImage.classList.remove("active");
+        }
+
+      });
+    }
+
+    // 因為回報的事件太多，因此利用 function debounce 增加延遲時間
+    window.addEventListener("scroll", debounce(checkSlide));
+
+
   </script>
 
   <style>
@@ -68,11 +100,11 @@
       font-size: 20px;
       font-weight: 200;
     }
-    
+
     body {
       margin: 0;
     }
-    
+
     *, *:before, *:after {
       box-sizing: inherit;
     }
@@ -107,7 +139,7 @@
     .align-left.slide-in {
       transform: translateX(-30%) scale(0.95);
     }
-    
+
     .align-right.slide-in {
       transform: translateX(30%) scale(0.95);
     }
