@@ -11,7 +11,7 @@ html {
 }
 
 *, *:before, *:after {
-  box-sizing: inherit; 
+  box-sizing: inherit;
 }
 
 svg {
@@ -76,4 +76,10 @@ h2 {
   padding: 10px;
   outline: 0;
   border: 1px solid rgba(0,0,0,0.1);
+}
+
+.checkMethod {
+  padding: 0;
+  text-align: left;
+  list-style: none;
 }

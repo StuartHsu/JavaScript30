@@ -23,16 +23,115 @@
       <input type="text" name="item" placeholder="Item Name" required>
       <input type="submit" value="+ Add Item">
     </form>
+    <ul class="checkMethod">
+      <li>
+        <input class="checkAll" type="checkbox">
+        <label>Check All</label>
+      </li>
+    </ul>
   </div>
 
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  // 先從 localStorage 找是否有資料，若沒有才給空陣列
+  const items = JSON.parse(localStorage.getItem("items")) || [];
+  const checkAllBotton = document.querySelector(".checkAll");
+
+
+  // 每次按下 submit 後觸發此 function 並重讀、顯示一次 populateList function裡的東西
+  function addItem(e) {
+    // 避免每次按下 submit 都重新整理網頁
+    e.preventDefault();
+    // 取出輸入框裡的值 & 當有很多 input 之類的要選取時，可以利用[name=xxx]這種形式個別選取
+    const text = (this.querySelector("[name=item]")).value;
+    // 宣告新增物件的項目
+    const item = {
+      // text: text,
+      text, // ES6 簡寫寫法
+      done: false
+    };
+    items.push(item);
+    // 要比 items.push(item); 晚執行，不然不會有新資料
+    populateList(items, itemsList);
+    // 存入 LocalStorage key-value
+    localStorage.setItem("items", JSON.stringify(items));
+    // 清空輸入框內容物
+    this.reset();
+  }
+
+  // plates = [], 避免 items 有問題時卡住不動
+  function populateList(plates = [], platesList) {
+    // 利用 map 取出資料(這時是個 big~string~)配合 join 將資料串再一起，顯示在 HTML
+    platesList.innerHTML = plates.map((plate, i) => {
+      // id 將 input & label 之間的關係連接起來
+      return `
+        <li>
+          <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? "checked" : ""}/>
+          <label for="item${i}">${plate.text}</label>
+          <span data-index=${i}>delete<span>
+        </li>
+      `;
+    }).join("");
+  }
+
+  // function toggleDone(e) {
+  //   // 只針對 checkbox 的事件做比對
+  //   if (!e.target.matches("input")) return; // skip this unless it's an input
+  //   // console.log(e.target);
+  //   // 取得 checkbox 的 data-index 值
+  //   const el = e.target;
+  //   // console.log(el.dataset.index);
+  //   const index = el.dataset.index;
+  //   // 改動 done 這項資料的 flag
+  //   items[index].done = !items[index].done;
+  //   // 存入更動後的資料
+  //   localStorage.setItem("items", JSON.stringify(items));
+  //   // 重新載入
+  //   populateList(items, itemsList);
+  // }
+
+  function toggleDone(e) {
+    // 先預設存檔狀態為 false
+    let save = false;
+    const el = e.target;
+    const index = el.dataset.index;
+    if (e.target.matches("input")) {
+      items[index].done = !items[index].done;
+      save = true;
+    }
+    if (e.target.matches("span")) {
+      // 刪除選取的那一項目
+      items.splice(index, 1);
+      save = true;
+    }
+    // 符合以上才將資料存入 localStorage
+    if (save) {
+      localStorage.setItem("items", JSON.stringify(items));
+      populateList(items, itemsList);
+    }
+  }
+
+  function checkAll(e) {
+    // 取得 checlAll按鈕當下 flag
+    const checkStatus = e.target.checked;
+    console.log(checkStatus);
+    // forEach 遍歷所有項目，並使其 check flag 與 checkAll 按鈕相符
+    items.forEach(index => {
+      index.done = checkStatus;
+    });
+    localStorage.setItem("items", JSON.stringify(items));
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener("submit", addItem);
+  itemsList.addEventListener("click", toggleDone);
+  checkAllBotton.addEventListener("click", checkAll);
+  // 進入頁面時跑一次，看有沒有東西
+  populateList(items, itemsList);
 
 </script>
 
 
 </body>
 </html>
-
