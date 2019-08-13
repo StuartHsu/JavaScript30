@@ -182,6 +182,34 @@
     </li>
   </ul>
 <script>
+
+  // 還要從 nodeList 利用 Array.from() 轉成 array，這樣後面的 map 才能用
+  const timeNodes = Array.from(document.querySelectorAll("[data-time]"));
+  // console.log(timeNodes);
+
+  // 將時間轉成秒數、接著取得所有影片總秒數
+  const seconds = timeNodes
+    // 用 map 取出所有的 data-time 元素中的值(時間)
+    .map(node => node.dataset.time)
+    // 再用一次 map 並搭配解構賦值將所有時間格式中的“：”前後分別賦值給分與秒
+    // map(parseFloat) 將文字轉為數字
+    .map(timeCode => {
+      const [mins, secs] = timeCode.split(":").map(parseFloat);
+      return mins * 60 + secs;
+    })
+    // 利用 reduce 逐一加總秒數
+    .reduce((total, vidSeconds) => total + vidSeconds);
+
+  let secondsLeft = seconds;
+  // 轉成小時
+  const hours = Math.floor(secondsLeft / 3600);
+  secondsLeft = secondsLeft % 3600;
+  // 轉成分
+  const mins = Math.floor(secondsLeft / 60);
+  secondsLeft = secondsLeft % 60;
+
+  console.log(hours, mins, secondsLeft);
+
 </script>
 </body>
 </html>
