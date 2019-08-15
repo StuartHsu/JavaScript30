@@ -10,8 +10,50 @@
   </div>
 
 <script>
+  // 確保不同瀏覽器都能建立語音識別功能 SpeechRecognition
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  // 建立變數存放語音辨識功能
+  const recognition = new SpeechRecognition();
+  // 讓語音識別可以輸出 過程中 的結果，就是連續講話時，即時辨識
+  recognition.interimResults = true;
 
+  // 產生輸出區域
+  let p = document.createElement("p");
+  const words = document.querySelector(".words");
+  // 新加入的段落接在最後面
+  words.appendChild(p);
+
+
+  // 監聽
+  recognition.addEventListener("result", e => {
+    // console.log(e.results);
+    // 將 e.results 的資料轉成陣列
+    const transcript = Array.from(e.results)
+      // 以 map 取得陣列中[0]的值
+      .map(result => result[0])
+      // 獲得 transcript 的內容 > 即語音辨識的結果
+      .map(result => result.transcript)
+      // 用空白將連接資料的 , 取代掉
+      .join("");
+
+      // 將語音辨識的結果印出在 p 元素的文字內容中
+      p.textContent = transcript;
+      // 由於每次重新講話都會蓋過之前的，所以加個判斷式判斷講話是已中斷
+      if (e.results[0].isFinal) {
+        p = document.createElement("p");
+        words.appendChild(p);
+      }
+      // 可以在收到特定內容時，實現給予不同的回應處理
+      if (transcript.includes("你好")) {
+        console.log("YAYAYAYAYAYAYAYAYAYAYAYAYAYAYAYAYA");
+      }
+    console.log(transcript);
+  });
+
+  // 語音辨識功能結識後，重新再次開啟語音辨識
+  recognition.addEventListener("end", recognition.start);
+  // 開始辨識
+  recognition.start();
 
 </script>
 
@@ -40,7 +82,7 @@
       position: relative;
       line-height: 3rem;
     }
-    
+
     p {
       margin: 0 0 3rem;
     }
