@@ -18,7 +18,7 @@
     html {
       font-size: 100px;
     }
-    
+
     body {
       margin: 0;
       font-family: sans-serif;
@@ -59,6 +59,23 @@
     /*Compass: https://thenounproject.com/search/?q=compass&i=592352*/
   </style>
   <script>
+    // 選取 HTML 中的元素
+    const arrow = document.querySelector(".arrow");
+    const speed = document.querySelector(".speed-value");
+
+    // 取得使用者座標、經緯度、速度
+    navigator.geolocation.watchPosition((data) => {
+      console.log(data);
+      // 取得時速
+      speed.textContent = data.coords.speed;
+      // 將羅盤做出 CSS 旋轉效果
+      arrow.style.transform = `rotate(${data.coords.heading}deg)`;
+      // 設置使用者拒絕提供定位資訊時的訊息
+    }, (err) => {
+      console.err(err);
+      alert("HEY You Gotta Allow That To Happen!!");
+    });
+
   </script>
 </body>
 </html>
