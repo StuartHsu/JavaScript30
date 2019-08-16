@@ -17,9 +17,9 @@
   html {
     box-sizing: border-box;
   }
-  
-  *, *:before, *:after { 
-    box-sizing: inherit; 
+
+  *, *:before, *:after {
+    box-sizing: inherit;
   }
 
   div {
@@ -42,6 +42,21 @@
 
 <button></button>
 <script>
+  // 取得控制元素
+  const divs = document.querySelectorAll("div");
+
+  // 印出 class value
+  function logText(e) {
+    console.log(this.classList.value);
+    // 停止 bubbling
+    // e.stopPropagation();
+  }
+
+  // 監聽每個 div 上的 click 事件
+  divs.forEach(div => div.addEventListener("click", logText, {
+    capture: false,
+    once: true
+}));
 
 </script>
 </body>
