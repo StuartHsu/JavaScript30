@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Sticky Nav</title>
-  <link rel="stylesheet" href="style-START.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -54,6 +54,28 @@
   </div>
 
 <script>
+  // 取得操縱元素
+  const nav = document.querySelector("#main");
+  const topOfNav = nav.offsetTop;
+
+  function fixNav() {
+    // console.log(topOfNav, window.scrollY);
+    // 判斷捲動位置
+    if (window.scrollY >= topOfNav) {
+      // 由於 nav 被設定為 fixed 後，便不再佔據原本的高度
+      // 因此在整個 body 加上 offsetHeight 避免出現彈跳
+      document.body.style.paddingTop = nav.offsetHeight + "px";
+      document.body.classList.add("fixed-nav");
+    } else {
+      // 移除
+      document.body.style.paddingTop = 0;
+      document.body.classList.remove("fixed-nav");
+    }
+
+  }
+
+  // 監聽滾動事件
+  window.addEventListener("scroll", fixNav);
 
 </script>
 

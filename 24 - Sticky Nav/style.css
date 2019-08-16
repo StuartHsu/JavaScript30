@@ -25,6 +25,11 @@ body {
   transition: transform 0.5s;
 }
 
+/* 當被加上 class fixed-nav 時，將整個 nav scale 恢復為 1 而產生放大效果 */
+.fixed-nav .site-wrap {
+  transform: scale(1);
+}
+
 header {
   text-align: center;
   height: 50vh;
@@ -50,6 +55,12 @@ nav {
   z-index: 1;
 }
 
+/* 當被加上 class fixed-nav 時，固定且產生陰影 */
+.fixed-nav nav {
+  position: fixed;
+  box-shadow: 0 5px rgba(0,0,0,0.1);
+}
+
 nav ul {
   margin: 0;
   padding:0;
@@ -72,6 +83,11 @@ li.logo {
   transition: all .5s;
   font-weight: 600;
   font-size: 30px;
+}
+
+/* 當有 class fixed-nav 時，logo 跑出來 */
+.fixed-nav li.logo {
+  max-width: 500px;
 }
 
 li.logo a {
