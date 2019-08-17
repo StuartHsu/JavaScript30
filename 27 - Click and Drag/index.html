@@ -35,6 +35,62 @@
   </div>
 
 <script>
+  // 建立操縱元素
+  const slider = document.querySelector(".items");
+  // 設置滑鼠按壓 flag、X位置、滾動位置變數
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+
+  // 按下滑鼠
+  slider.addEventListener("mousedown", (e) => {
+    // 按下 flag 打開
+    isDown = true;
+    // 加上 class 呈現效果
+    slider.classList.add("active")
+    // console.log(e.pageX);
+    // 訂出按下滑鼠時的初始位置
+    startX = e.pageX - slider.offsetLeft;
+    // console.log(startX, e.pageX, slider.offsetLeft);
+    // 訂出與左邊的滾動距離
+    scrollLeft = slider.scrollLeft;
+    // console.log({startX, scrollLeft});
+  });
+
+  // 滑鼠移開 slider 範圍
+  slider.addEventListener("mouseleave", () => {
+    // 按下 flag 關閉
+    isDown = false;
+    // 移除 class 移除效果
+    slider.classList.remove("active")
+  });
+
+  // 放開滑鼠按鍵
+  slider.addEventListener("mouseup", () => {
+    // 按下 flag 關閉
+    isDown = false;
+    // 移除 class 移除效果
+    slider.classList.remove("active")
+  });
+
+  // 滑鼠移動
+  slider.addEventListener("mousemove", (e) => {
+    // 如果滑鼠移動時，按鍵沒有按壓，則停止
+    if (!isDown) return;
+    // console.count(isDown);
+    // 避免觸發其他預設事件 ex: 按下+移動預設是選取範圍
+    e.preventDefault();
+    // 訂出當下按下滑鼠時的位置
+    const x = e.pageX - slider.offsetLeft;
+    // console.log({x, startX});
+    // 計算與初始點擊位置的距離
+    const walk = x - startX;
+    // console.log({x, startX, walk});
+    // 因為每次重新點擊都會重新計算一次 slider.scrollLeft，
+    // 所以要從滑鼠點擊時那邊取得前一次移動完的捲動距離 scrollLeft = slider.scrollLeft; 再把數值加到這一次的捲動起始值
+    slider.scrollLeft = scrollLeft - walk;
+  });
+
 </script>
 
   </body>
