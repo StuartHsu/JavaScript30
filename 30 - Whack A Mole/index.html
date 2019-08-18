@@ -33,9 +33,82 @@
   </div>
 
 <script>
+  // 建立操縱元素
   const holes = document.querySelectorAll('.hole');
   const scoreBoard = document.querySelector('.score');
   const moles = document.querySelectorAll('.mole');
+
+  // 變數初始設定
+  let lastHole; // 最後一次地鼠出現的洞位置
+  let timeUp = false;
+  let score = 0;
+
+  // 地鼠亂數存活時間
+  function randomTime(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  }
+
+  // 地鼠出現的洞，給一個隨機的洞 (DOM element)
+  function randomHole(holes) {
+    // console.log(holes.length); // 6 個 hole 的 nodeList
+    // 產生隨機的索引值
+    const idx = Math.floor(Math.random() * holes.length);
+    // 將隨機索引值帶入
+    const hole = holes[idx];
+    // console.log(hole);
+    // 避免連續出現重複位置
+    if (hole === lastHole) {
+      console.log("Ah nah that's the same one bud");
+      return randomHole(holes);
+    }
+    // 將出現過的位置存起來作為前次出現的位置
+    lastHole = hole;
+    return hole;
+  }
+
+  // 地鼠出現
+  function peep() {
+    // 出現時間
+    const time = randomTime(200, 1000);
+    // 出現在哪個洞
+    const hole = randomHole(holes);
+    // console.log(time, hole);
+
+    // 渲染至 HTML 中使地鼠出現
+    hole.classList.add("up");
+    // 存在時間超過後消失
+    setTimeout(() => {
+      hole.classList.remove("up");
+      // 若遊戲時間還沒到，則消失後重新下一隻地鼠出現
+      if (!timeUp) peep();
+    }, time);
+  }
+
+  // 開始遊戲
+  function startGame() {
+    // 初始化分數、timeUp flag
+    scoreBoard.textContent = 0;
+    timeUp = false;
+    score = 0;
+    // 執行地鼠出現功能
+    peep();
+    setTimeout(() => timeUp = true, 10000);
+  }
+
+  // 打地鼠
+  function bonk(e) {
+    // console.log(e);
+    if (!e.isTrusted) return; // 若非人為點擊，則終止
+    // 得分
+    score++;
+    // 移除這隻地鼠的 CSS 效果
+    this.classList.remove("up");
+    // 更新計分板
+    scoreBoard.textContent = score;
+  }
+
+  // 監聽被點擊到的地鼠事件
+  moles.forEach(mole => mole.addEventListener("click", bonk));
 
 </script>
 </body>
